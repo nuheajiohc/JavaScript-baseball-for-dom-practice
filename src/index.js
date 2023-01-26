@@ -1,3 +1,5 @@
+const randomNumber = MissionUtils.Random.pickNumberInRange(1, 9);
+
 const $ = selector => document.querySelector(selector);
 
 function BaseballGame() {
@@ -5,7 +7,7 @@ function BaseballGame() {
     return "결과 값 String";
   };
   userNumber();
-  function userNumber() {
+  function userNumberValidator() {
     $("#submit").addEventListener("click", e => {
       e.preventDefault();
       if ($("#user-input").value === "") {
