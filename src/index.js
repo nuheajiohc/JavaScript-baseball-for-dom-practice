@@ -1,12 +1,11 @@
-const randomNumber = MissionUtils.Random.pickNumberInRange(1, 9);
-
 const $ = selector => document.querySelector(selector);
 
 function BaseballGame() {
   this.play = function (computerInputNumbers, userInputNumbers) {
+    console.log(1);
     return "결과 값 String";
   };
-  userNumber();
+  userNumberValidator();
   function userNumberValidator() {
     $("#submit").addEventListener("click", e => {
       e.preventDefault();
@@ -35,6 +34,17 @@ function BaseballGame() {
         return;
       }
     });
+  }
+
+  function randomNumberGenerator() {
+    const randomNumberList = [];
+    while (randomNumberList.length < 3) {
+      const randomNumber = MissionUtils.Random.pickNumberInRange(1, 9);
+      if (!randomNumberList.includes(randomNumber)) {
+        randomNumberList.push(randomNumber);
+      }
+    }
+    return randomNumberList;
   }
 }
 new BaseballGame();
