@@ -10,6 +10,7 @@ function BaseballGame() {
     e.preventDefault();
     if (e.target.id === "submit") {
       inputValidator();
+      compareNumber(e);
     }
   });
 
@@ -49,12 +50,54 @@ function BaseballGame() {
         randomNumberList.push(randomNumber);
       }
     }
-    return randomNumberList;
+    return randomNumberList.map(String);
   }
 
+  const randomNumberList = randomNumberGenerator();
   function compareNumber(e) {
-    const randomNuberList = randomNumberGenerator();
-    console.log(e);
+    const inputValue = $("#user-input").value;
+    let strikeCnt = 0;
+    let ballCnt = 0;
+    let result = "";
+    for (let i = 0; i <= 2; i += 1) {
+      if (inputValue[i] === randomNumberList[i]) {
+        strikeCnt += 1;
+      } else {
+        if (randomNumberList.includes(inputValue[i])) {
+          ballCnt += 1;
+        }
+      }
+    }
+    if (ballCnt) {
+      result += `${ballCnt}볼 `;
+    }
+    if (strikeCnt) {
+      result += `${strikeCnt}스트라이크`;
+    }
+    if (ballCnt === 0 && strikeCnt === 0) {
+      result = "낫싱";
+    }
+    console.log(randomNumberList);
+    result = result.trim();
+    if (!(result === "3스트라이크")) {
+      $("#result").innerText = result;
+      $("#game-restart-button").style.visibility = "hidden";
+    }
+    if (result === "3스트라이크") {
+      $("#result").innerHTML = `
+      <div>
+        <strong>  
+      🎉정답을 맞추셨습니다.🎉
+        </strong>
+      </div>
+      <br/>
+      <div>
+        게임을 새로 시작하시겠습니까?
+      </div>
+      <br/>
+      `;
+      $("#game-restart-button").style.visibility = "visible";
+    }
   }
 }
 new BaseballGame();
