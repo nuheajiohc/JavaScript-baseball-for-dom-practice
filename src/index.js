@@ -5,9 +5,9 @@ function BaseballGame() {
     console.log(1);
     return "결과 값 String";
   };
-  userNumberValidator();
-  function userNumberValidator() {
-    $("#submit").addEventListener("click", e => {
+
+  document.addEventListener("click", e => {
+    if (e.target.id === "submit") {
       e.preventDefault();
       if ($("#user-input").value === "") {
         alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
@@ -33,8 +33,11 @@ function BaseballGame() {
         $("#user-input").value = null;
         return;
       }
-    });
-  }
+    }
+
+    if (e.target.id === "user-input") {
+    }
+  });
 
   function randomNumberGenerator() {
     const randomNumberList = [];
@@ -45,6 +48,11 @@ function BaseballGame() {
       }
     }
     return randomNumberList;
+  }
+  function compareNumber(e) {
+    const randomNuberList = randomNumberGenerator();
+    // randomNumberList;
+    console.log(e);
   }
 }
 new BaseballGame();
