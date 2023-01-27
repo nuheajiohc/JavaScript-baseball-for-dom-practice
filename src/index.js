@@ -7,37 +7,39 @@ function BaseballGame() {
   };
 
   document.addEventListener("click", e => {
+    e.preventDefault();
     if (e.target.id === "submit") {
-      e.preventDefault();
-      if ($("#user-input").value === "") {
-        alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
-        return;
-      }
-      if (new Set($("#user-input").value).size !== 3) {
-        alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
-        $("#user-input").value = null;
-        return;
-      }
-      if ($("#user-input").value.length !== 3) {
-        alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
-        $("#user-input").value = null;
-        return;
-      }
-      if (!Number($("#user-input").value)) {
-        alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
-        $("#user-input").value = null;
-        return;
-      }
-      if ($("#user-input").value.includes("0")) {
-        alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
-        $("#user-input").value = null;
-        return;
-      }
-    }
-
-    if (e.target.id === "user-input") {
+      inputValidator();
     }
   });
+
+  function inputValidator() {
+    const inputValue = $("#user-input").value;
+    if (inputValue === "") {
+      alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
+      return;
+    }
+    if (new Set(inputValue).size !== 3) {
+      alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
+      inputValue = null;
+      return;
+    }
+    if (inputValue.length !== 3) {
+      alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
+      inputValue = null;
+      return;
+    }
+    if (!Number(inputValue)) {
+      alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
+      inputValue = null;
+      return;
+    }
+    if (inputValue.includes("0")) {
+      alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
+      inputValue = null;
+      return;
+    }
+  }
 
   function randomNumberGenerator() {
     const randomNumberList = [];
@@ -49,6 +51,7 @@ function BaseballGame() {
     }
     return randomNumberList;
   }
+
   function compareNumber(e) {
     const randomNuberList = randomNumberGenerator();
     // randomNumberList;
