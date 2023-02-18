@@ -1,4 +1,4 @@
-import $ from "./dom.js";
+import $ from "./utils/dom.js";
 
 function inputValidator() {
   const inputValue = $("#user-input").value;

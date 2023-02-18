@@ -1,89 +1,33 @@
-const $ = selector => document.querySelector(selector);
+import $ from "./utils/dom.js";
+import inputValidator from "./InputValidator.js";
+import makeRandomNumber from "./numberGenerator.js";
 
 function BaseballGame() {
   this.play = function (computerInputNumbers, userInputNumbers) {
-    console.log(1);
     return "결과 값 String";
   };
 
-  document.addEventListener("click", e => {
-    e.preventDefault();
-    if (e.target.id === "submit") {
-      inputValidator();
-      compareNumber(e);
-    }
-  });
+  this.init = () => {
+    $("#result").style.visibility = "hidden";
+    $("#game-restart-button").style.visibility = "hidden";
+  };
 
-  function inputValidator() {
-    let inputValue = $("#user-input").value;
-    if (inputValue === "") {
-      alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
-      return;
-    }
-    if (new Set(inputValue).size !== 3) {
-      alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
-      $("#user-input").value = null;
-      return;
-    }
-    if (inputValue.length !== 3) {
-      alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
-      $("#user-input").value = null;
-      return;
-    }
-    if (!Number(inputValue)) {
-      alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
-      $("#user-input").value = null;
-      return;
-    }
-    if (inputValue.includes("0")) {
-      alert("입력값이 올바르지 않습니다. 다시 입력해주세요");
-      $("#user-input").value = null;
-      return;
-    }
-  }
+  let randomNumberList = makeRandomNumber();
+  const handleRestart = e => {
+    randomNumberList = makeRandomNumber();
+    this.init();
+  };
 
-  function randomNumberGenerator() {
-    const randomNumberList = [];
-    while (randomNumberList.length < 3) {
-      const randomNumber = MissionUtils.Random.pickNumberInRange(1, 9);
-      if (!randomNumberList.includes(randomNumber)) {
-        randomNumberList.push(randomNumber);
-      }
-    }
-    return randomNumberList.map(String);
-  }
-
-  const randomNumberList = randomNumberGenerator();
-  function compareNumber(e) {
-    const inputValue = $("#user-input").value;
-    let strikeCnt = 0;
-    let ballCnt = 0;
+  const getHint = (ballCnt, strikeCnt) => {
     let result = "";
-    for (let i = 0; i <= 2; i += 1) {
-      if (inputValue[i] === randomNumberList[i]) {
-        strikeCnt += 1;
-      } else {
-        if (randomNumberList.includes(inputValue[i])) {
-          ballCnt += 1;
-        }
-      }
-    }
-    if (ballCnt) {
-      result += `${ballCnt}볼 `;
-    }
-    if (strikeCnt) {
-      result += `${strikeCnt}스트라이크`;
-    }
-    if (ballCnt === 0 && strikeCnt === 0) {
-      result = "낫싱";
-    }
-    console.log(randomNumberList);
-    result = result.trim();
-    if (!(result === "3스트라이크")) {
-      $("#result").innerText = result;
-      $("#game-restart-button").style.visibility = "hidden";
-    }
-    if (result === "3스트라이크") {
+    ballCnt ? (result += `${ballCnt}볼`) : "";
+    strikeCnt ? (result += ` ${strikeCnt}스트라이크`) : "";
+    return result ? result.trim() : "낫싱";
+  };
+
+  const renderResult = (ballCnt, strikeCnt) => {
+    $("#user-input").value = null;
+    if (strikeCnt === 3) {
       $("#result").innerHTML = `
       <div>
         <strong>  
@@ -97,7 +41,35 @@ function BaseballGame() {
       <br/>
       `;
       $("#game-restart-button").style.visibility = "visible";
+    } else {
+      $("#result").style.visibility = "visible";
+      $("#result").innerText = getHint(ballCnt, strikeCnt);
+      $("#game-restart-button").style.visibility = "hidden";
     }
+  };
+
+  function countBallStrike() {
+    const inputValue = $("#user-input").value;
+    let strikeCnt = 0;
+    let ballCnt = 0;
+    for (let i = 0; i <= 2; i += 1) {
+      if (inputValue[i] === randomNumberList[i]) {
+        strikeCnt += 1;
+      } else if (randomNumberList.includes(inputValue[i])) {
+        ballCnt += 1;
+      }
+    }
+    console.log(randomNumberList);
+    renderResult(ballCnt, strikeCnt);
   }
+
+  $("#submit").addEventListener("click", e => {
+    e.preventDefault();
+    inputValidator();
+    countBallStrike();
+  });
+
+  $("#game-restart-button").addEventListener("click", handleRestart);
 }
-new BaseballGame();
+const baseballGame = new BaseballGame();
+baseballGame.init();
