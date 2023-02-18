@@ -2,74 +2,87 @@ import $ from "./utils/dom.js";
 import inputValidator from "./InputValidator.js";
 import makeRandomNumber from "./numberGenerator.js";
 
-function BaseballGame() {
-  this.play = function (computerInputNumbers, userInputNumbers) {
-    return "결과 값 String";
-  };
+class BaseballGame {
+  constructor() {
+    this.randomNumberList = [];
+  }
 
-  this.init = () => {
+  play(computerInputNumbers, userInputNumbers) {
+    return "결과 값 String";
+  }
+
+  init() {
     $("#result").style.visibility = "hidden";
     $("#game-restart-button").style.visibility = "hidden";
-  };
+    this.randomNumberList = makeRandomNumber();
+    this.initEventLisenters();
+  }
 
-  let randomNumberList = makeRandomNumber();
-  const handleRestart = e => {
-    randomNumberList = makeRandomNumber();
-    this.init();
-  };
+  handleRestart() {
+    this.randomNumberList = makeRandomNumber();
+    $("#result").style.visibility = "hidden";
+    $("#game-restart-button").style.visibility = "hidden";
+  }
 
-  const getHint = (ballCnt, strikeCnt) => {
+  handleSubmit(e) {
+    e.preventDefault();
+    inputValidator();
+    this.countBallStrike();
+  }
+
+  getHint(ballCnt, strikeCnt) {
     let result = "";
     ballCnt ? (result += `${ballCnt}볼`) : "";
     strikeCnt ? (result += ` ${strikeCnt}스트라이크`) : "";
     return result ? result.trim() : "낫싱";
-  };
+  }
 
-  const renderResult = (ballCnt, strikeCnt) => {
+  render(ballCnt, strikeCnt) {
     $("#user-input").value = null;
     if (strikeCnt === 3) {
       $("#result").innerHTML = `
-      <div>
-        <strong>  
-      🎉정답을 맞추셨습니다.🎉
-        </strong>
-      </div>
-      <br/>
-      <div>
-        게임을 새로 시작하시겠습니까?
-      </div>
-      <br/>
-      `;
+        <div>
+          <strong>  
+        🎉정답을 맞추셨습니다.🎉
+          </strong>
+        </div>
+        <br/>
+        <div>
+          게임을 새로 시작하시겠습니까?
+        </div>
+        <br/>
+        `;
       $("#game-restart-button").style.visibility = "visible";
     } else {
       $("#result").style.visibility = "visible";
-      $("#result").innerText = getHint(ballCnt, strikeCnt);
+      $("#result").innerText = this.getHint(ballCnt, strikeCnt);
       $("#game-restart-button").style.visibility = "hidden";
     }
-  };
+  }
 
-  function countBallStrike() {
+  countBallStrike() {
     const inputValue = $("#user-input").value;
     let strikeCnt = 0;
     let ballCnt = 0;
     for (let i = 0; i <= 2; i += 1) {
-      if (inputValue[i] === randomNumberList[i]) {
+      if (inputValue[i] === this.randomNumberList[i]) {
         strikeCnt += 1;
-      } else if (randomNumberList.includes(inputValue[i])) {
+      } else if (this.randomNumberList.includes(inputValue[i])) {
         ballCnt += 1;
       }
     }
-    console.log(randomNumberList);
-    renderResult(ballCnt, strikeCnt);
+    console.log(this.randomNumberList);
+    this.render(ballCnt, strikeCnt);
   }
 
-  $("#submit").addEventListener("click", e => {
-    e.preventDefault();
-    inputValidator();
-    countBallStrike();
-  });
-
-  $("#game-restart-button").addEventListener("click", handleRestart);
+  initEventLisenters() {
+    $("#submit").addEventListener("click", this.handleSubmit.bind(this));
+    $("#game-restart-button").addEventListener(
+      "click",
+      this.handleRestart.bind(this)
+    );
+  }
 }
+
 const baseballGame = new BaseballGame();
 baseballGame.init();
