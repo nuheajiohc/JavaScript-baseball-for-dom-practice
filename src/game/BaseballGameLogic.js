@@ -22,10 +22,6 @@ class BaseballGameLogic {
     this.randomNumberList = makeRandomNumber();
   }
 
-  getRandomNumber() {
-    return this.randomNumberList;
-  }
-
   countBall(userNumber) {
     for (let i = 0; i < 3; i += 1) {
       const isBall =
@@ -42,7 +38,6 @@ class BaseballGameLogic {
   }
 
   getBallStrike() {
-    console.log(this.randomNumberList);
     return { ball: this.#ball, strike: this.#strike };
   }
 }
